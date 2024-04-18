@@ -1,0 +1,39 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:14.1
+    container_name: "postgres_db_test"
+    restart: unless-stopped
+    ports:
+      - 25432:5432
+#    command: postgres -c config_file=/etc/pg_hba.conf
+    volumes:
+#      - "./pg_hba.conf:/etc/pg_hba.conf"
+      - "dbc:/var/lib/postgresql/data"
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: wl_digitalizacion
+    networks:
+      - db_net
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: "postgres_pgadmin_test"
+    restart: unless-stopped
+    ports:
+      - 10813:80
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: pwroot
+    depends_on:
+      - db
+    networks:
+      - db_net
+
+volumes:
+  dbc:
+
+networks:
+  db_net:
+    name: postgrestest_net

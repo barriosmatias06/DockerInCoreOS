@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  gitlab-runner:
+    image: gitlab/gitlab-runner:latest
+    container_name: gitlab-runner
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:Z
+      - ./config:/etc/gitlab-runner:Z
+#    environment:
+#        - TZ = America/Argentina/Buenos_Aires
+    mem_limit: 2g #Limita a 2gb el uso de memoria RAM

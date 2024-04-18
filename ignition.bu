@@ -1,0 +1,57 @@
+#
+variant: fcos
+version: 1.4.0
+passwd:
+  users:
+    - name: admin
+      password_hash: $6$tlU4NwuItJKAtTCH$4cG7pZ69rieaLATcpV5ggrh5vw6Kji8e1RoThTtuP9SDc0gYZ7/X8b/fdVAJ6o7q3Lfjwl2k6MPPplvbd3vMm1
+      #1password
+      ssh_authorized_keys:
+        - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFD7YgSGZM5YCGoPVZKlbfiOFDFoDzHTQmu5uWVj2EVp matias.barrios@reserv.com.ar
+    - name: usuario1
+      password_hash: $6$TgquebQRchTmwkf5$5SjMD.AcKl8Y19x2cs7qvUc8bI3pv.MxdiZpJJ0un2v6Weed4q.8iSf.1kof2Bb1V/wpZYCsWg3aumjx59XTc.
+      #password
+      groups:
+        - "sudo"
+        - "docker"
+    - name: usuario2
+      password_hash: $6$FGoUedrD4TCnjAZ3$HjQoPhN5gOcLRDup2gH2s0yPOPUbqwUKUcMEtbCiPp91eRdv2vuEOnpX/TuGACucqraV2IPVQY5IN1rXVJ6jl1
+      #password
+      groups:
+        - "sudo"
+        - "docker"
+      ssh_authorized_keys:
+        - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFD7YgSGZM5YCGoPVZKlbfiOFDFoDzHTQmu5uWVj2EVp matias.barrios@reserv.com.ar
+    - name: usuariogenerico
+      groups:
+        - "docker"
+      password_hash: $6$FLdJjVqIcHi1ThTu$kImYNf1uZHbynuSVR6smY0WvCugSygYTXzLmgCeZ6kqZt/rg7e//YXW0KkGcJq/doYWtrznrFcfMmzT3hbBGz1
+      #password
+      ssh_authorized_keys:
+        - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFD7YgSGZM5YCGoPVZKlbfiOFDFoDzHTQmu5uWVj2EVp matias.barrios@reserv.com.ar
+systemd:
+  units:
+    - name: serial-getty@ttyS0.service
+      dropins:
+      - name: autologin-core.conf
+        contents: |
+          [Service]
+          # Override Execstart in main unit
+          ExecStart=
+          # Add new Execstart with `-` prefix to ignore failure`
+          ExecStart=-/usr/sbin/agetty --autologin core --noclear %I $TERM
+storage:
+  files:
+    - path: /etc/hostname
+      mode: 0644
+      contents:
+        inline: |
+          dockersrv
+    - path: /etc/ssh/sshd_config.d/20-enable-passwords.conf
+      mode: 0644
+      contents:
+        inline: |
+          # Fedora CoreOS disables SSH password login by default.
+          # Enable it.
+          # This file must sort before 40-disable-passwords.conf.
+          PasswordAuthentication yes

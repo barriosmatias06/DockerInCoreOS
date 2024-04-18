@@ -13,3 +13,4 @@ Algunos Archivos Docker in CoreOS
 -
 #postgres db compose + ./pg_hba.conf
 -
+![Captura desde 2024-04-18 00-00-45](https://github.com/barriosmatias06/DockerInCoreOS/assets/29740790/94c97fda-5510-4193-b58a-36f580bd107b)

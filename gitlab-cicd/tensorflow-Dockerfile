@@ -1,0 +1,31 @@
+FROM tensorflow/tensorflow:latest
+
+# Instala las dependencias y Git
+RUN apt-get update -y && \
+    apt-get install -y protobuf-compiler ffmpeg libsm6 \
+    libxext6 nano git && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN pip install --upgrade pip
+
+# Clona el repositorio de TensorFlow Models
+RUN git clone https://github.com/tensorflow/models.git /tensorflow/models
+
+WORKDIR /
+RUN pip install cython
+RUN git clone https://github.com/cocodataset/cocoapi.git
+WORKDIR /cocoapi/PythonAPI
+RUN make
+RUN cp -r pycocotools ../../tensorflow/models/research/
+
+WORKDIR /tensorflow/models/research
+RUN protoc object_detection/protos/*.proto --python_out=.
+RUN cp object_detection/packages/tf2/setup.py .
+RUN pip install .
+
+RUN pip install -r requirements.txt
+
+RUN python object_detection/builders/model_builder_tf2_test.py
+
+CMD tail -f /dev/null
